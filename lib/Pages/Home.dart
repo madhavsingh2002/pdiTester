@@ -115,36 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.all(16),
-              height: 150,
-              width: double.infinity,
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Report Bug",
-                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "Found Bug? Report now.",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      )
-                  ),
-                ),
-              ),
-            ),
             if (userData?['role'] == "") ...[
               Container(
                 margin: EdgeInsets.all(16),

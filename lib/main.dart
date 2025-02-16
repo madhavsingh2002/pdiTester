@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'Pages/Login.dart';
 import 'Pages/Home.dart';
-import 'Pages/New_Test.dart'; // Import your HomeScreen
+import 'Pages/New_Test.dart';
+import 'Pages/PreviousTests.dart'; // Import your HomeScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -22,11 +22,11 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomeScreen(),
         '/newTest': (context) => NewTestScreen(),
         '/newTestDetail': (context) => NewTestScreen(),
+        '/previoustest': (context) => Previoustests(),
       },
     );
   }
 }
-
 class AuthCheck extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

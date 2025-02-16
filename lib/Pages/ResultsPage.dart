@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Components/InfoTile.dart';
 import '../Components/QuestionComp.dart';
+import 'PreviousTests.dart';
 
 class ResultsPage extends StatefulWidget {
   final List<QuestionData> responses;
@@ -53,8 +55,17 @@ class _ResultsPageState extends State<ResultsPage> {
       };
       await testResults.add(testData);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Test results submitted successfully!")),
+        SnackBar(
+          content: Text("$_uid Bands successfully sent to Prod. Team"),
+        ),
       );
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => Previoustests()),
+              (Route<dynamic> route) => false,
+        );
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to submit results: $e")),
@@ -133,6 +144,13 @@ class _ResultsPageState extends State<ResultsPage> {
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 2,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(40),
+                ],
+                textInputAction: TextInputAction.done, // Adds a "Done" button on the keyboard
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).unfocus(); // Hides the keyboard when "Done" is pressed
+                },
               ),
               Center(
                 child: ElevatedButton(

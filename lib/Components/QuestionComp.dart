@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 class QuestionData {
   final String question;
   String? selectedOption;
@@ -55,6 +56,13 @@ class _QuestionWidgetState extends State<QuestionWidget> {
             border: OutlineInputBorder(),
           ),
           maxLines: 2,
+          textInputAction: TextInputAction.done, // Adds a "Done" button on the keyboard
+          onFieldSubmitted: (_) {
+            FocusScope.of(context).unfocus(); // Hides the keyboard when "Done" is pressed
+          },
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(40),
+          ],
         ),
         SizedBox(height: 20),
       ],
