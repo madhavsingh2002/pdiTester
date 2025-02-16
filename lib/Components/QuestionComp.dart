@@ -1,86 +1,62 @@
 import 'package:flutter/material.dart';
-
-class QuestionWidget extends StatefulWidget {
+class QuestionData {
   final String question;
-  final String option1;
-  final String option2;
+  String? selectedOption;
+  final TextEditingController remarksController = TextEditingController();
 
-  const QuestionWidget({
-    Key? key,
-    required this.question,
-    required this.option1,
-    required this.option2,
-  }) : super(key: key);
+  QuestionData(this.question);
+}
+class QuestionWidget extends StatefulWidget {
+  final QuestionData questionData;
+
+  const QuestionWidget({Key? key, required this.questionData}) : super(key: key);
 
   @override
   _QuestionWidgetState createState() => _QuestionWidgetState();
 }
 
 class _QuestionWidgetState extends State<QuestionWidget> {
-  String? selectedOption;
-  TextEditingController remarksController = TextEditingController();
-
-  void submitAnswer() {
-    String remarks = remarksController.text.trim();
-    String result =
-        "Selected: ${selectedOption ?? "None"}\nRemarks: ${remarks.isNotEmpty ? remarks : "No remarks"}";
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Your Response"),
-        content: Text(result),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("OK"),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.question,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
+        Text(widget.questionData.question, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         SizedBox(height: 10),
-        RadioListTile<String>(
-          title: Text(widget.option1),
-          value: widget.option1,
-          groupValue: selectedOption,
-          onChanged: (value) => setState(() => selectedOption = value),
-        ),
-        RadioListTile<String>(
-          title: Text(widget.option2),
-          value: widget.option2,
-          groupValue: selectedOption,
-          onChanged: (value) => setState(() => selectedOption = value),
+        Row(
+          children: [
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text("Pass"),
+                value: "Pass",
+                groupValue: widget.questionData.selectedOption,
+                onChanged: (value) => setState(() {
+                  widget.questionData.selectedOption = value;
+                }),
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text("Fail"),
+                value: "Fail",
+                groupValue: widget.questionData.selectedOption,
+                onChanged: (value) => setState(() {
+                  widget.questionData.selectedOption = value;
+                }),
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 10),
         TextFormField(
-          controller: remarksController,
+          controller: widget.questionData.remarksController,
           decoration: InputDecoration(
             labelText: "Remarks (optional)",
             border: OutlineInputBorder(),
           ),
-          maxLines: 3,
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (_) {
-            FocusScope.of(context).unfocus();
-          },
+          maxLines: 2,
         ),
         SizedBox(height: 20),
-        Center(
-          child: ElevatedButton(
-            onPressed: submitAnswer,
-            child: Text("Submit"),
-          ),
-        ),
       ],
     );
   }

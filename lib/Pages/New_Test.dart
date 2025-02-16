@@ -63,8 +63,8 @@ class _NewTestScreenState extends State<NewTestScreen> {
     setState(() {
       _isSubmitted = true; // Mark the form as submitted
     });
-
-    if (_formKey.currentState?.validate() ?? false) {
+    String uid = _uidController.text.trim(); // Trim the input
+    if (uid.isNotEmpty && (_formKey.currentState?.validate() ?? false)) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('testername', _nameController.text);
       await prefs.setString('testerdate', _dateController.text);
