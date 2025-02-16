@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "536853073871",
+    "project_id": "tester-a4724",
+    "storage_bucket": "tester-a4724.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536853073871:android:11ff22d8b84ffbe9624cba",
+        "android_client_info": {
+          "package_name": "com.example.pditester"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5Gf_7ivLFwzrxn9DIWwVFUhkvGtD7zss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
