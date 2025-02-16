@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'PreviousTestDetail.dart';
+
 class Previoustests extends StatefulWidget {
   @override
   _PrevioustestsState createState() => _PrevioustestsState();
@@ -13,7 +15,10 @@ class _PrevioustestsState extends State<Previoustests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Previous Tests")),
+      appBar: AppBar(
+        title: const Text("Previous Tests"),
+        // ✅ Back button is automatically added
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<QuerySnapshot>(
@@ -42,6 +47,16 @@ class _PrevioustestsState extends State<Previoustests> {
                         Text("Date: ${data['date'] ?? 'N/A'}"),
                       ],
                     ),
+                    onTap: () {
+                      // Navigate to detail screen with data
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PrevioustestDetail(testData: data),
+                        ),
+                      );
+                    },
                   ),
                 );
               }).toList(),
