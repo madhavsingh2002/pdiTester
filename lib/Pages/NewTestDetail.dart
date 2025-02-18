@@ -13,6 +13,7 @@ class _NewTestDetailState extends State<NewTestDetail> {
   String _name = "";
   String _date = "";
   String _uid = "";
+  String _role = "";
   @override
   void initState() {
     super.initState();
@@ -24,6 +25,7 @@ class _NewTestDetailState extends State<NewTestDetail> {
       _name = prefs.getString('testername') ?? "N/A";
       _date = prefs.getString('testerdate') ?? "N/A";
       _uid = prefs.getString('testeruid') ?? "N/A";
+      _role = prefs.getString('userrole') ?? "N/A";
     });
   }
   void _submitAllAnswers() {
@@ -42,29 +44,31 @@ class _NewTestDetailState extends State<NewTestDetail> {
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ), backgroundColor: Color(0xffffffff)),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 16),
-            InfoTile(label : "Name", value:_name),
-            InfoTile(label: "Date",value: _date),
-            InfoTile(label: "UID", value: _uid),
-            Text(
-              "Note: Wear the bands and check alignment of bands before testing.",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xff3C4142)),
-            ),
-            SizedBox(height: 16),
-            ...questionsList.map((q) =>
-                QuestionWidget(questionData: q)).toList(),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: _submitAllAnswers,
-                child: Text("Submit All"),
+        child: Container(
+          color: Color(0xffffffff), // Set background color here
+          padding: const EdgeInsets.all(16.0), // Optional padding
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 16),
+              InfoTile(label: "Name", value: _name),
+              InfoTile(label: "Date", value: _date),
+              InfoTile(label: "UID", value: _uid),
+              Text(
+                "Note: Wear the bands and check alignment of bands before testing.",
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xff3C4142)),
               ),
-            ),
-          ],
+              SizedBox(height: 16),
+              ...questionsList.map((q) => QuestionWidget(questionData: q)).toList(),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submitAllAnswers,
+                  child: Text("Submit All"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

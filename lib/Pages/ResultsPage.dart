@@ -19,6 +19,7 @@ class _ResultsPageState extends State<ResultsPage> {
   String _name = "";
   String _date = "";
   String _uid = "";
+  String _role = "";
   String _finalRemark = "Pass"; // Default value for RadioListTile
   final TextEditingController _remarkController = TextEditingController();
   @override
@@ -32,6 +33,7 @@ class _ResultsPageState extends State<ResultsPage> {
       _name = prefs.getString('testername') ?? "N/A";
       _date = prefs.getString('testerdate') ?? "N/A";
       _uid = prefs.getString('testeruid') ?? "N/A";
+      _role = prefs.getString('userrole') ?? "N/A";
     });
   }
   Future<void> _submitData() async {
@@ -41,6 +43,7 @@ class _ResultsPageState extends State<ResultsPage> {
         "name": _name,
         "date": _date,
         "uid": _uid,
+        "role": _role,
         "finalRemark": _finalRemark,
         "additionalRemarks": _remarkController.text.trim(),
         "responses": widget.responses.map((q) {

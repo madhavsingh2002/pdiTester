@@ -40,11 +40,13 @@ class _NewTestScreenState extends State<NewTestScreen> {
           .collection('userRole')
           .where('email', isEqualTo: userEmail)
           .get();
-
       if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
+        setState(() async{
           userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
           _nameController.text = userData?['name'] ?? "";
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('userrole', userData?['role'] ?? "");
+
           String formattedDate =
           DateFormat("dd MMM yyyy: hh:mm a").format(DateTime.now());
           _dateController.text = formattedDate;
