@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -119,7 +120,7 @@ class _NewTestScreenState extends State<NewTestScreen> {
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+         // mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -146,27 +147,39 @@ class _NewTestScreenState extends State<NewTestScreen> {
                     decoration: InputDecoration(labelText: "Date"),
                   ),
                   SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _selectedBand,
-                    items: _bands.map((band) {
-                      return DropdownMenuItem<String>(
-                        value: band,
-                        child: Text(band),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedBand = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Select UID",
+                DropdownSearch<String>(
+                  items: _bands,
+                  selectedItem: _selectedBand,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBand = value;
+                    });
+                  },
+                  dropdownBuilder: (context, selectedItem) => Text(
+                    selectedItem ?? "Select UID",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  popupProps: PopupProps.menu(
+                    showSearchBox: true,
+                    searchFieldProps: TextFieldProps(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  dropdownButtonProps: DropdownButtonProps(
+                    icon: Icon(Icons.arrow_drop_down),
+                  ),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      border: OutlineInputBorder(),
                       errorText: _isSubmitted && _selectedBand == null
                           ? "Please select a UID"
                           : null,
                     ),
                   ),
-                  SizedBox(height: 24),
+                ),
+                SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: _handleNext,
                     child: Text("Next"),
