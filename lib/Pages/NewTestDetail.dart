@@ -13,7 +13,6 @@ class _NewTestDetailState extends State<NewTestDetail> {
   String _name = "";
   String _date = "";
   String _uid = "";
-  String _role = "";
   @override
   void initState() {
     super.initState();
@@ -25,7 +24,6 @@ class _NewTestDetailState extends State<NewTestDetail> {
       _name = prefs.getString('testername') ?? "N/A";
       _date = prefs.getString('testerdate') ?? "N/A";
       _uid = prefs.getString('testeruid') ?? "N/A";
-      _role = prefs.getString('userrole') ?? "N/A";
     });
   }
   void _submitAllAnswers() {

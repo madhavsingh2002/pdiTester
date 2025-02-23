@@ -1,10 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pditester/Pages/ReportBugScreen.dart';
+import 'package:pditester/Pages/TestScreen.dart';
 import 'Pages/Login.dart';
 import 'Pages/Home.dart';
+import 'Pages/NewReportBug.dart';
+import 'Pages/NewRequestBand.dart';
 import 'Pages/New_Test.dart';
-import 'Pages/PreviousTests.dart'; // Import your HomeScreen
+import 'Pages/PreviousReportBug.dart';
+import 'Pages/PreviousRequestDevice.dart';
+import 'Pages/PreviousTests.dart';
+import 'Pages/RequestBandScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,13 +23,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthCheck(), // Check login status and navigate accordingly
+      home: AuthCheck(),
       routes: {
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
+        // TESTS
+        '/testScreen': (context) => TestScreen(),
         '/newTest': (context) => NewTestScreen(),
-        '/newTestDetail': (context) => NewTestScreen(),
-        '/previoustest': (context) => Previoustests(),
+        '/previousTest': (context) => Previoustests(),
+        // REQUEST BAND
+        '/requestBandScreen': (context) => RequestDeviceScreen(),
+        '/newRequestBand': (context) => NewRequestDevice(),
+        '/previousRequestBand': (context) => PreviousRequestDevice(),
+        // Report BUG
+        '/reportBugScreen': (context) => ReportBugScreen(),
+        '/NewReportBug': (context) => NewReportBug(),
+        '/PreviousReportBug': (context) => PreviousReportBug(),
       },
     );
   }

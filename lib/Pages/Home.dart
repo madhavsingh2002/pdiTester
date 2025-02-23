@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Map<String, dynamic>? userData;
+
   Future<void> fetchUserData() async {
     try {
       String? userEmail = FirebaseAuth.instance.currentUser?.email;
@@ -18,13 +20,11 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       QuerySnapshot querySnapshot = await _firestore
           .collection('userRole')
-          .where('role', isEqualTo: "Admin")
-          .where('email', isEqualTo: userEmail) // Corrected usage
+          .where('email', isEqualTo: userEmail)
           .get();
       if (querySnapshot.docs.isNotEmpty) {
         setState(() {
           userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
-          print(userData);
         });
       } else {
         print("No user found.");
@@ -42,124 +42,88 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> items = [
+      {
+        "title": "Test Band",
+        "description": "Conduct the new Test\n See the Previous Tests",
+        "route": "/testScreen"
+      },
+      {
+        "title": "Report Bug",
+        "description": "Found any Bug? Report now.",
+        "route": "/reportBugScreen"
+      },
+      {
+        "title": "Request a Band",
+        "description": "Need a Band? Ask Now.",
+        "route": "/requestBandScreen"
+      }
+    ];
+
     return Scaffold(
       appBar: AppBar(title: Text("Welcome, ${userData?['name'] ?? ""}")),
       body: Center(
         child: userData == null
             ? CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, "/newTest"); // Navigate on click
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(16),
-                      height: 150,
-                      width: double.infinity,
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+        )
+            : CarouselSlider(
+          options: CarouselOptions(
+            height: MediaQuery.of(context).size.height * 0.625, // 80% of screen height
+            enlargeCenterPage: true,
+            autoPlay: true,
+            aspectRatio: 16 / 9,
+            autoPlayInterval: Duration(seconds: 6),
+            viewportFraction: 0.65, // Shows some part of left & right items
+            enableInfiniteScroll: true, // Enables infinite scrolling
+            pageSnapping: true, // Ensures proper snapping behavior
+          ),
+          items: items.map((item) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, item["route"]);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      blurRadius: 5,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          item["title"],
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "New Test",
-                                style: TextStyle(
-                                    fontSize: 22, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "Conduct the new Test",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          )),
+                        SizedBox(height: 8),
+                        Text(
+                          item["description"],
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, "/previoustest"); // Navigate on click
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(16),
-                      height: 150,
-                      width: double.infinity,
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Previous Tests",
-                                style: TextStyle(
-                                    fontSize: 22, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "See all the previous done by You",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          )),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (userData?['role'] == "") ...[
-                    Container(
-                      margin: EdgeInsets.all(16),
-                      height: 150,
-                      width: double.infinity,
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "All Tests",
-                                style: TextStyle(
-                                    fontSize: 22, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "See all the Tests done till now.",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          )),
-                        ),
-                      ),
-                    ),
-                  ] else ...[
-                    //Text("You are in another team")
-                  ]
-                ],
+                ),
               ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }

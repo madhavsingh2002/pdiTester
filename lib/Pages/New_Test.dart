@@ -60,7 +60,6 @@ class _NewTestScreenState extends State<NewTestScreen> {
       setState(() => _isLoading = false); // Stop loading indicator
     }
   }
-
   void _handleNext() async {
     setState(() {
       _isSubmitted = true; // Mark the form as submitted
