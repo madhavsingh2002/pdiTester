@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Map<String, dynamic>> items = [
       {
         "title": "Test Band",
-        "description": "Conduct the new Test\n See the Previous Tests",
+        "description": "New Band up for Delivery? Test Now",
         "route": "/testScreen"
       },
       {

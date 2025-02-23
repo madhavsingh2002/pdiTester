@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
- import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'NewTestDetail.dart';
 
@@ -16,16 +15,20 @@ class _NewTestScreenState extends State<NewTestScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _uidController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   Map<String, dynamic>? userData;
-  bool _isLoading = true; // To track loading state
-  bool _isSubmitted = false; // Track form submission state
+  bool _isLoading = true;
+  bool _isSubmitted = false;
+
+  List<String> _bands = [];
+  String? _selectedBand;
 
   @override
   void initState() {
     super.initState();
     fetchUserData();
+    fetchBands();
   }
 
   Future<void> fetchUserData() async {
@@ -40,10 +43,12 @@ class _NewTestScreenState extends State<NewTestScreen> {
           .collection('userRole')
           .where('email', isEqualTo: userEmail)
           .get();
+
       if (querySnapshot.docs.isNotEmpty) {
-        setState(() async{
+        setState(() async {
           userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
           _nameController.text = userData?['name'] ?? "";
+
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('userrole', userData?['role'] ?? "");
 
@@ -57,27 +62,50 @@ class _NewTestScreenState extends State<NewTestScreen> {
     } catch (e) {
       print("Error fetching user data: $e");
     } finally {
-      setState(() => _isLoading = false); // Stop loading indicator
+      setState(() => _isLoading = false);
     }
   }
+
+  Future<void> fetchBands() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore
+          .collection('inventory')
+          .doc('nDC9MyIkZgpvIlpiy9V2')
+          .get();
+
+      if (documentSnapshot.exists) {
+        List<dynamic>? bandsArray = documentSnapshot.data()?['Bands'];
+        if (bandsArray != null) {
+          setState(() {
+            _bands = bandsArray.map((band) => band.toString()).toList();
+          });
+        }
+      } else {
+        print("Document does not exist.");
+      }
+    } catch (e) {
+      print("Error fetching bands: $e");
+    }
+  }
+
   void _handleNext() async {
     setState(() {
-      _isSubmitted = true; // Mark the form as submitted
+      _isSubmitted = true;
     });
-    String uid = _uidController.text.trim(); // Trim the input
-    if (uid.isNotEmpty && (_formKey.currentState?.validate() ?? false)) {
+
+    if (_selectedBand != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('testername', _nameController.text);
       await prefs.setString('testerdate', _dateController.text);
-      await prefs.setString('testeruid', _uidController.text);
+      await prefs.setString('testeruid', _selectedBand!);
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => NewTestDetail()),
       );
     } else {
-      // Show error message if UID is empty
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("UID is mandatory...")),
+        SnackBar(content: Text("Please select a band UID")),
       );
     }
   }
@@ -89,7 +117,7 @@ class _NewTestScreenState extends State<NewTestScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: _isLoading
-            ? Center(child: CircularProgressIndicator()) // Show loading indicator
+            ? Center(child: CircularProgressIndicator())
             : Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,18 +146,25 @@ class _NewTestScreenState extends State<NewTestScreen> {
                     decoration: InputDecoration(labelText: "Date"),
                   ),
                   SizedBox(height: 16),
-                  TextFormField(
-                    controller: _uidController,
+                  DropdownButtonFormField<String>(
+                    value: _selectedBand,
+                    items: _bands.map((band) {
+                      return DropdownMenuItem<String>(
+                        value: band,
+                        child: Text(band),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedBand = value;
+                      });
+                    },
                     decoration: InputDecoration(
-                      labelText: "UID",
-                      errorText: _isSubmitted &&
-                          (_uidController.text.trim().isEmpty)
-                          ? "Please enter UID"
+                      labelText: "Select UID",
+                      errorText: _isSubmitted && _selectedBand == null
+                          ? "Please select a UID"
                           : null,
                     ),
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(20),
-                    ],
                   ),
                   SizedBox(height: 24),
                   ElevatedButton(
